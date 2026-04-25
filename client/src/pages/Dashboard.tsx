@@ -543,6 +543,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");
   const [revealSensitive, setRevealSensitive] = useState(false);
+  const [deletingAll, setDeletingAll] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const { toast } = useToast();
@@ -649,6 +650,44 @@ export default function Dashboard() {
     }
   }
 
+  async function handleDeleteAll() {
+    if (docs.length === 0) {
+      toast({ title: "لا توجد سجلات للحذف" });
+      return;
+    }
+    const confirmed = confirm(
+      `هل أنت متأكد من حذف جميع السجلات (${docs.length})؟ لا يمكن التراجع عن هذا الإجراء.`,
+    );
+    if (!confirmed) return;
+    const second = prompt(`اكتب "حذف" للتأكيد على حذف ${docs.length} سجل`);
+    if (second !== "حذف") {
+      toast({ title: "تم إلغاء الحذف" });
+      return;
+    }
+    setDeletingAll(true);
+    try {
+      const ids = docs.map((d) => d.__id);
+      const results = await Promise.allSettled(
+        ids.map((id) => deleteDoc(doc(db, "orders", id))),
+      );
+      const failed = results.filter((r) => r.status === "rejected").length;
+      const ok = results.length - failed;
+      setSelectedId(null);
+      if (failed === 0) {
+        toast({ title: `تم حذف ${ok} سجل` });
+      } else {
+        toast({
+          title: `تم حذف ${ok}، فشل ${failed}`,
+          variant: "destructive",
+        });
+      }
+    } catch (e: any) {
+      toast({ title: "تعذر الحذف", description: e.message, variant: "destructive" });
+    } finally {
+      setDeletingAll(false);
+    }
+  }
+
   return (
     <div dir="rtl" className="h-screen overflow-hidden bg-[#0e1621] text-white flex flex-col">
       {/* Top bar */}
@@ -663,18 +702,34 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-white/60 hover:text-white hover:bg-white/10 gap-2 h-9"
-          onClick={() => setRevealSensitive((v) => !v)}
-          data-testid="button-toggle-sensitive"
-        >
-          {revealSensitive ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          <span className="hidden sm:inline text-xs">
-            {revealSensitive ? "إخفاء الحساس" : "إظهار الحساس"}
-          </span>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-white/60 hover:text-white hover:bg-white/10 gap-2 h-9"
+            onClick={() => setRevealSensitive((v) => !v)}
+            data-testid="button-toggle-sensitive"
+          >
+            {revealSensitive ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            <span className="hidden sm:inline text-xs">
+              {revealSensitive ? "إخفاء الحساس" : "إظهار الحساس"}
+            </span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-2 h-9 border border-red-500/20"
+            onClick={handleDeleteAll}
+            disabled={deletingAll || docs.length === 0}
+            data-testid="button-delete-all"
+          >
+            <Trash2 className="h-4 w-4" />
+            <span className="hidden sm:inline text-xs font-semibold">
+              {deletingAll ? "جاري الحذف..." : `حذف الكل (${docs.length})`}
+            </span>
+          </Button>
+        </div>
       </header>
 
       {/* Body: sidebar + main */}
