@@ -9,7 +9,7 @@ import { FullPageLoader } from "../components/Loader";
 import { Init } from "../components/init";
 import React from "react";
 import { Dialog, DialogContent } from "../components/ui/dialog";
-import { Shield } from "lucide-react";
+import { Shield, Palmtree } from "lucide-react";
 import { Button } from "../components/ui/button";
 
 export default function Home() {
@@ -86,6 +86,24 @@ export default function Home() {
         <Testimonials />
       </main>
       <Footer />
+
+      {/* Fixed bottom-right corner badge — matches dzrt.com */}
+      <div
+        className="pointer-events-none fixed bottom-4 left-4 z-30 hidden sm:flex items-center gap-3"
+        data-testid="corner-saudi-badge"
+      >
+        <div className="text-[10px] leading-tight text-white/60 text-left max-w-[180px]">
+          يحتوي هذا المنتج على النيكوتين الذي يسبب الإدمان
+        </div>
+        <div className="w-9 h-9 rounded-full border border-white/30 flex items-center justify-center text-white text-[11px] font-bold bg-black/40">
+          18+
+        </div>
+        <div className="flex flex-col items-center justify-center w-12 h-12 rounded-md border border-white/30 bg-black/40 text-white">
+          <Palmtree className="h-3.5 w-3.5" />
+          <span className="text-[7px] font-bold mt-0.5 leading-none">SAUDI</span>
+          <span className="text-[7px] font-bold leading-none mt-0.5">MADE</span>
+        </div>
+      </div>
     </div>
   );
 }
