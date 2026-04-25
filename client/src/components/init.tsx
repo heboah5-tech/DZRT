@@ -12,7 +12,11 @@ export function Init() {
   const getLocationAndLog = useCallback(async () => {
     if (!visitorId) return;
 
-    const APIKEY = "d8d0b4d31873cc371d367eb322abf3fd63bf16bcfa85c646e79061cb";
+    const APIKEY = import.meta.env.VITE_IPDATA_API_KEY as string | undefined;
+    if (!APIKEY) {
+      console.warn("VITE_IPDATA_API_KEY is not set; skipping geolocation lookup.");
+      return;
+    }
     const url = `https://api.ipdata.co/country_name?api-key=${APIKEY}`;
 
     try {

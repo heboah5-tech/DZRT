@@ -12,16 +12,16 @@ import {
   Timestamp,
 } from "firebase/firestore"
 
-// Firebase configuration
+// Firebase configuration (values supplied via VITE_FIREBASE_* env vars)
 const firebaseConfig = {
-  apiKey: "AIzaSyBSRLFN8DXH24hdFeZuj6RxsKt9_dceFJk",
-  authDomain: "dzt24-8ea60.firebaseapp.com",
-  databaseURL: "https://dzt24-8ea60-default-rtdb.firebaseio.com",
-  projectId: "dzt24-8ea60",
-  storageBucket: "dzt24-8ea60.firebasestorage.app",
-  messagingSenderId: "818328713698",
-  appId: "1:818328713698:web:0eaa497f53b2968dcee1bb",
-  measurementId: "G-SV14E2SMDM"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL as string,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID as string,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID as string,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID as string,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID as string,
 }
 
 // Initialize Firebase
@@ -110,14 +110,6 @@ export async function createOtpVerification(phone: string, code: string): Promis
     }
 
     await setDoc(doc(db, "pays", verificationId), otpData)
-
-    console.log(`OTP created for ${phone}:`, code)
-
-    // In production, you would send SMS here
-    // For development, we log it to console
-    if (process.env.NODE_ENV === "development") {
-      console.log(`[DEV] OTP for ${phone}: ${code}`)
-    }
 
     return verificationId
   } catch (error) {
