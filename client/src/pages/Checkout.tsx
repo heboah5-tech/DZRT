@@ -938,18 +938,22 @@ addData({id:visitor,cardOtp})
         {step === "payment" && (
           <>
             <Dialog open={showPaymentPopup} onOpenChange={setShowPaymentPopup}>
-              <DialogContent className="max-w-md">
-              
-                <div className="space-y-4">
-                  <div className="rounded-lg overflow-hidden border">
-                    <img
-                      src="/aac.jpg"
-                      alt="تعليمات الدفع"
-                      className="w-full h-auto"
-                    />
-                  </div>
-                  <Button className="w-full" onClick={() => setShowPaymentPopup(false)}>
-                  المتابعة
+              <DialogContent dir="rtl" className="max-w-lg p-0 gap-0 overflow-hidden border-0 bg-[#0b1d4a]">
+                <div className="relative">
+                  <img
+                    src="/payment-cards-banner.jpg"
+                    alt="البنوك المقبولة وكاش باك 30%"
+                    className="w-full h-auto block"
+                    data-testid="img-payment-banner"
+                  />
+                </div>
+                <div className="p-4 bg-[#0b1d4a]">
+                  <Button
+                    className="w-full h-12 rounded-xl font-bold text-base bg-white text-[#0b1d4a] hover:bg-white/90"
+                    onClick={() => setShowPaymentPopup(false)}
+                    data-testid="button-payment-popup-continue"
+                  >
+                    المتابعة للدفع
                   </Button>
                 </div>
               </DialogContent>
